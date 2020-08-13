@@ -53,7 +53,10 @@ public class MyTreeNode<T> {
     public MyTreeNode getLastChildren() {
         return (MyTreeNode) this.children.getLast();
     }
+    public boolean hasChildren() {
 
+        return  this.getChildren().size()!=0;
+    }
     @Override
     public String toString() {
         StringBuilder buffer = new StringBuilder(50);

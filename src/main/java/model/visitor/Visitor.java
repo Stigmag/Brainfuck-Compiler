@@ -8,6 +8,6 @@ public interface Visitor {
     void visitGreaterThanCommand(GreaterThanCommand command);
     void visitLessThanCommand(LessThanCommand command);
     void visitDotCommand(DotCommand command);
-    boolean visitOpenBracketCommand(OpenBracket command);
-    boolean visitCloseBracketCommand(CloseBracket command);
+
+    boolean visitLoopCommand(LoopCommand command);
 }

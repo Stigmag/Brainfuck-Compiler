@@ -26,18 +26,12 @@ command.execute();
         command.execute();
     }
 
-
     @Override
-    public boolean visitOpenBracketCommand(OpenBracket command) {
-        command.execute();
-       return command.isStatus();
-    }
-
-    @Override
-    public boolean visitCloseBracketCommand(CloseBracket command) {
+    public boolean visitLoopCommand(LoopCommand command) {
         command.execute();
         return command.isStatus();
     }
+
 
     @Override
     public void visitDotCommand(DotCommand command) {

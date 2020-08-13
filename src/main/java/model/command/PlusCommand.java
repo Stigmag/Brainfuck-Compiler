@@ -7,16 +7,19 @@ public class PlusCommand implements ICommand {
 
     private short[] arr;
     private int pointer;
+    private InputData inputData;
 
-    public PlusCommand() {
-        this.arr = InputData.getArr();
-        this.pointer = InputData.getPointer();
+    public PlusCommand(InputData inputData) {
+        this.inputData=inputData;
+        this.arr = inputData.getArr();
+        this.pointer = inputData.getPointer();
     }
 
     @Override
     public void execute() {
-        if ((arr[pointer]+1) > 255) this.arr[pointer] = 0;
+        if ((this.arr[pointer]+1) > 255) this.arr[pointer] = 0;
         else ++this.arr[pointer];
+        this.inputData.setArr(this.arr);
 
     }
     @Override

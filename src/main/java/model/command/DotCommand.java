@@ -10,21 +10,24 @@ public class DotCommand  implements ICommand {
     private short[] arr;
 
     private StringBuilder output;
-
-    public DotCommand() {
-        this.pointer = InputData.getPointer();
-        this.arr = InputData.getArr();
-        this.output = OutputData.output;
+    private InputData inputData;
+    private OutputData outputData;
+    public DotCommand(InputData inputData,OutputData outputData) {
+        this.inputData=inputData;
+        this.pointer = inputData.getPointer();
+        this.arr = inputData.getArr();
+        this.output = outputData.getOutput();
+        this.outputData=outputData;
     }
 
     @Override
     public void execute() {
 
-       this.output.append((char) arr[pointer]);
+        this.outputData.setOutput(this.output.append((char) arr[pointer]));
 
     }
     @Override
     public void accept(Visitor visitor) {
-         visitor.visitDotCommand(this);
+        visitor.visitDotCommand(this);
     }
 }

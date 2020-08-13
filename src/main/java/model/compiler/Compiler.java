@@ -6,18 +6,22 @@ public class Compiler {
     public Compiler() {
     }
 
-    private PreOrderTreeVisitor visitor = new PreOrderTreeVisitor();
+   private OutputData outputData= new OutputData();
 
     public void printResult() {
 
-        System.out.println(OutputData.output);
+        System.out.println(outputData.getOutput());
     }
     public String getResult(){
-        return OutputData.output.toString();
+        return outputData.getOutput().toString();
     }
 
-    public void compile(String code)  {
-        InputData inputData = new InputData(code);
-        visitor.visit(code);
+
+        public void compile(String code)  {
+            InputData inputData = new InputData(code);
+
+            PreOrderTreeVisitor visitor = new PreOrderTreeVisitor(inputData,outputData);
+            visitor.visit(code);
+        }
     }
-}
+

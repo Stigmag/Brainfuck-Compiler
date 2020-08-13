@@ -6,15 +6,15 @@ import model.visitor.Visitor;
 public class GreaterThanCommand  implements ICommand {
 
     private int pointer;
-
-    public GreaterThanCommand( ) {
-
-        this.pointer = InputData.getPointer();
+    private InputData inputData;
+    public GreaterThanCommand( InputData inputData) {
+        this.inputData=inputData;
+        this.pointer = inputData.getPointer();
     }
 
     @Override
     public void execute() {
-       InputData.setPointer(++this.pointer);
+        this.inputData.setPointer(++this.pointer);
 
     }
 

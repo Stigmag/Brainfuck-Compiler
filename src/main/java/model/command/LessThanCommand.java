@@ -6,15 +6,16 @@ import model.visitor.Visitor;
 public class LessThanCommand  implements ICommand {
 
     private int pointer;
+    private InputData inputData;
 
-    public LessThanCommand() {
-
-        this.pointer = InputData.getPointer();
+    public LessThanCommand(InputData inputData) {
+        this.inputData=inputData;
+        this.pointer = inputData.getPointer();
     }
 
     @Override
     public void execute() {
-        InputData.setPointer(--this.pointer);
+        this.inputData.setPointer(--this.pointer);
 
     }
     @Override

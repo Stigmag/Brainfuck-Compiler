@@ -7,7 +7,7 @@ public class TestForCompiler {
     Compiler compiler;
     String dCode="++++++++[>++++++++++++>+++++++++++++<<-]>++++.-.>+++++++.<+.+.";
     String helloWorld="++++++++++[>+++++++>++++++++++>+++>+<<<<-]>++.>+.+++++++..+++.>++.<<+++++++++++++++.>.+++.------.--------.>+.>.";
-
+    String helloWorldWithLoops="++++++++[>++++[>++>+++>+++>+<<<<-]>+>+>->>+[<]<-]>>.>---.+++++++..+++.>>.<-.<.+++.------.--------.>>+.>++.";
     @Before
     public void setUp() {
        compiler= new Compiler();
@@ -15,13 +15,18 @@ public class TestForCompiler {
 }
 
     @Test
-    public void testFroDCode() {
+    public void testForDCode() {
         compiler.compile(dCode);
         Assert.assertEquals("dcode",compiler.getResult() );
     }
     @Test
-    public void testFroHelloWorld() {
+    public void testForHelloWorld() {
         compiler.compile(helloWorld);
+        Assert.assertEquals("Hello World!\n",compiler.getResult() );
+    }
+    @Test
+    public void testForHelloWorldWithLoops() {
+        compiler.compile(helloWorldWithLoops);
         Assert.assertEquals("Hello World!\n",compiler.getResult() );
     }
 }

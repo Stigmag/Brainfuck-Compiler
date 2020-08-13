@@ -1,28 +1,37 @@
 package model.compiler;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+
 public class InputData {
     private static final int STACK_LENGHT = 30000;
-    private static short[] arr = new short[STACK_LENGHT];
-    private static int pointer = 0;
+    private short[] arr;
+    private int pointer;
     private String code;
 
     public InputData(String code)  {
-
-
+        this.arr=new short[STACK_LENGHT];
+        this.pointer=0;
         this.code = code;
     }
 
-    public static short[] getArr() {
-        return arr;
+    public short[] getArr() {
+        return this.arr;
     }
 
-    public static int getPointer() {
-        return pointer;
+    public int getPointer() {
+        return this.pointer;
     }
 
-    public static void setPointer(int pointer) {
-        InputData.pointer = pointer;
+    public  void setArr(short[] arr) {
+        this.arr = arr;
     }
 
+    public  void setPointer(int pointer) {
+        this.pointer = pointer;
+    }
 
+    public String getCode() {
+        return code;
+    }
 }
