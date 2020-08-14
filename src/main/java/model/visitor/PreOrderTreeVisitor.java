@@ -9,21 +9,20 @@ import tree.MyTreeNode;
 
 import java.util.LinkedList;
 import java.util.ListIterator;
-
+import java.util.Stack;
 
 public class PreOrderTreeVisitor {
-    private boolean inLoop = false;
-    private boolean endLoop = false;
-    private CommandTreeCreator treeConvector = new CommandTreeCreator();
-    private int numberOfOpenBracket = 0;
-    private int indexOfNextCommand = 0;
-    private MyTreeNode nextCommand;
+
+
+    private boolean isLoop = false;
     private InputData inputData;
     private OutputData outputData;
-
+    private CommandTreeCreator treeConvector = new CommandTreeCreator();
     private ListIterator<MyTreeNode> commandIterator;
-    private ListIterator<MyTreeNode> loopCommandIterator;
-    private boolean exit = false;
+    private Stack<ListIterator<MyTreeNode>> stackForLoops = new Stack<>();
+
+    private MyTreeNode nextCommand;
+    private boolean isExit = false;
 
     public PreOrderTreeVisitor(InputData inputData, OutputData outputData) {
         this.inputData = inputData;
@@ -35,156 +34,100 @@ public class PreOrderTreeVisitor {
     public void visit(String code) {
         treeConvector.createTree(code);
         commandIterator = treeConvector.getRoot().getChildren().listIterator();
-
-        traverseEachNode(treeConvector.getRoot());
+        traverseEachNode(treeConvector.getRoot(), commandIterator);
 
     }
 
 
-    private void traverseEachNode(MyTreeNode node) {
+    private void traverseEachNode(MyTreeNode node, ListIterator<MyTreeNode> commandIterator) {
+
         CommandVisitor commandVisitor = new CommandVisitor();
-        if (!exit) {
-            if (!inLoop && commandIterator.hasNext()) {
 
-                loopCommandIterator = commandIterator;
-                node = commandIterator.next();
-                convertCommand(node, commandVisitor);
-                if (commandIterator.hasNext())
-                    traverseEachNode(node);
-                else exit = true;
+        if (commandIterator.hasNext()) {
+
+            node = commandIterator.next();
+            convertCommand(node, commandVisitor, commandIterator);
 
 
-            } else {
-                LinkedList<MyTreeNode<String>> listOfNode = node.getChildren();
-                for (int i = 0; i < listOfNode.size(); i++) {
-                    if (endLoop) {
-                        i = indexOfNextCommand;
-                        endLoop = false;
-
-                    }
-                    if (numberOfOpenBracket % 2 != 0 && loopCommandIterator.hasNext()) {
-
-                        loopCommandIterator.next();
-                    }
-
-                    node = listOfNode.get(i);
-
-                    convertCommand(node, commandVisitor);
-                    traverseEachNode(node);
-
-
-                }
-
-
-            }
-
+            traverseEachNode(node, commandIterator);
+            return;
         }
+
 
     }
 
 
-    private void convertCommand(MyTreeNode<String> node, CommandVisitor commandVisitor) {
-        if (!exit) {
-            switch (node.getData()) {
-                case "+": {
-                    commandVisitor.visitPlusCommand(new PlusCommand(inputData));
-                    break;
-                }
-                case "-": {
-
-                    commandVisitor.visitMinusCommand(new MinusCommand(inputData));
-                    break;
-                }
-                case ">": {
-
-                    commandVisitor.visitGreaterThanCommand(new GreaterThanCommand(inputData));
-                    break;
-                }
-                case "<": {
-
-                    commandVisitor.visitLessThanCommand(new LessThanCommand(inputData));
-                    break;
-                }
-                case ".": {
-
-                    commandVisitor.visitDotCommand(new DotCommand(inputData,outputData));
-                    break;
-                }
-                case "[": {
-
-                    numberOfOpenBracket++;
-
-                    indexOfNextCommand = loopCommandIterator.nextIndex();
-                    if (loopCommandIterator.hasNext()) {
-                        nextCommand = loopCommandIterator.next();
-                    }
 
 
-                    if (numberOfOpenBracket % 2 != 0) {
+    private void convertCommand(MyTreeNode<String> node, CommandVisitor commandVisitor, ListIterator<MyTreeNode> currentCommandIterator) {
 
-                        loopCommandIterator = node.getChildren().listIterator();
+        switch (node.getData()) {
+            case "+": {
+                commandVisitor.visitPlusCommand(new PlusCommand(inputData));
+                break;
+            }
+            case "-": {
+
+                commandVisitor.visitMinusCommand(new MinusCommand(inputData));
+                break;
+            }
+            case ">": {
+
+                commandVisitor.visitGreaterThanCommand(new GreaterThanCommand(inputData));
+                break;
+            }
+            case "<": {
+
+                commandVisitor.visitLessThanCommand(new LessThanCommand(inputData));
+                break;
+            }
+            case ".": {
+
+                commandVisitor.visitDotCommand(new DotCommand(inputData, outputData));
+                break;
+            }
+            case "[": {
+                isLoop = true;
+                stackForLoops.push(currentCommandIterator);
+                boolean loopStatus = commandVisitor.visitLoopCommand(new LoopCommand(inputData));
+                if (loopStatus) {
+                    isLoop = true;
+
+                    if (stackForLoops.peek().hasNext()) {
+                        nextCommand = stackForLoops.peek().next();
                     }
                 }
+                ListIterator<MyTreeNode> loopIterator = node.getChildren().listIterator();
+                while (isLoop) {
 
-                case "]": {
+                    traverseEachNode(node, loopIterator);
+                    return;
 
-                    boolean loopStatus = commandVisitor.visitLoopCommand(new LoopCommand(inputData));
-                    if (loopStatus) {
-                        inLoop = true;
-                        endLoop = false;
-
-
-                    } else {
-                        node = nextCommand.getParent();
-                        numberOfOpenBracket--;
-                        isLoopsEnd();
-                        isStillLoop();
-                        getPreviousElement();
-
-                    }
-                    while (inLoop) {
-                        isHasNext(node);
-                        if (node.hasChildren()) {
-                            traverseEachNode(node);
-
-                        } else {
-
-                            traverseEachNode(node.getParent());
-                        }
-                    }
-                    break;
                 }
 
+
+                break;
+            }
+            case "]": {
+                boolean loopStatus = commandVisitor.visitLoopCommand(new LoopCommand(inputData));
+                if (!loopStatus) {
+                    if (stackForLoops.peek().hasPrevious()) stackForLoops.peek().previous();
+
+                    traverseEachNode(nextCommand, stackForLoops.pop());
+                } else {
+                    ListIterator<MyTreeNode> resetLoopCommand = node.getParent().getChildren().listIterator();
+
+                    traverseEachNode(node.getParent(), resetLoopCommand);
+                    return;
+                }
+
+
+                break;
             }
         }
+
+
     }
-
-    private void isHasNext(MyTreeNode node) {
-        if (!loopCommandIterator.hasNext()) {
-            loopCommandIterator = node.getParent().getChildren().listIterator();
-        }
-    }
-
-    private void isLoopsEnd() {
-        if (numberOfOpenBracket == 0) {
-            inLoop = false;
-            commandIterator.previous();
-
-        }
-    }
-
-    private void isStillLoop() {
-        if (numberOfOpenBracket % 2 != 0) {
-            endLoop = true;
-
-        }
-    }
-
-    private void getPreviousElement() {
-        if (loopCommandIterator.hasPrevious()) {
-            loopCommandIterator.previous();
-        }
-    }
-
 
 }
+
