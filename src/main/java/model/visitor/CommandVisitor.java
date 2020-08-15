@@ -32,7 +32,6 @@ command.execute();
         return command.isStatus();
     }
 
-
     @Override
     public void visitDotCommand(DotCommand command) {
         command.execute();

@@ -1,13 +1,9 @@
 package tree;
-
-
-
-
-
 import java.util.Iterator;
 import java.util.LinkedList;
 
 public class MyTreeNode<T> {
+
     private T data;
     private LinkedList<MyTreeNode> children = new LinkedList<>();
     private MyTreeNode parent = null;
@@ -52,10 +48,6 @@ public class MyTreeNode<T> {
 
     public MyTreeNode getLastChildren() {
         return (MyTreeNode) this.children.getLast();
-    }
-    public boolean hasChildren() {
-
-        return  this.getChildren().size()!=0;
     }
     @Override
     public String toString() {

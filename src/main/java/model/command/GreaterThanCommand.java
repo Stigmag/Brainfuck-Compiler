@@ -7,6 +7,7 @@ public class GreaterThanCommand  implements ICommand {
 
     private int pointer;
     private InputData inputData;
+
     public GreaterThanCommand( InputData inputData) {
         this.inputData=inputData;
         this.pointer = inputData.getPointer();
