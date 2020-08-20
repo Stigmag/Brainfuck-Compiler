@@ -1,28 +1,41 @@
 package model.compiler;
 
-import model.visitor.PreOrderTreeVisitor;
+import model.command.Command;
+import model.lexeme.Lexeme;
+import model.lexeme.LexemeEnum;
+import model.visitor.CommandVisitor;
+
+import java.util.*;
 
 public class Compiler {
 
-    private OutputData outputData = new OutputData();
-
-    public void printResult() {
-
-        System.out.println(outputData.getOutput());
+    public List<Command> compile(String code) {
+        if (code == null || code.isEmpty()) {
+            throw new IllegalArgumentException("Empty instruction!");
+        }
+        Deque<List<Command>> commands = new ArrayDeque<>();
+        List<Command> listOfCommand = new ArrayList<>();
+        commands.push(listOfCommand);
+        CommandVisitor visitor = new CommandVisitor(commands);
+        List<Lexeme> listOfLexeme = getListOfLexemes(code);
+        for (Lexeme lexeme : listOfLexeme
+        ) {
+            lexeme.accept(visitor);
+        }
+        return commands.pop();
     }
 
-    public String getResult() {
-        return outputData.getOutput().toString();
+    public List<Lexeme> getListOfLexemes(String code) {
+        List<Lexeme> listOfLexemes = new ArrayList<>();
+        for (String value : code.split("")
+        ) {
+            LexemeEnum lexeme = LexemeEnum.fromString(value);
+            listOfLexemes.add(lexeme.create());
+
+        }
+        return listOfLexemes;
     }
 
-    public void compile(String code) {
-        if(code!=""){
-        InputData inputData = new InputData(code);
-
-        PreOrderTreeVisitor visitor = new PreOrderTreeVisitor(inputData, outputData);
-        visitor.visit(code);}
-        else outputData.setOutput(new StringBuilder("ERROR! EMPTY STRING! PLEASE, ENTER STRING!"));
-
-    }
 }
+
 

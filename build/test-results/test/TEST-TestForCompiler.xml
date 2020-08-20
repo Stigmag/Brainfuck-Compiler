@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="TestForCompiler" tests="1" skipped="0" failures="0" errors="0" timestamp="2020-08-15T21:11:18" hostname="DESKTOP-SDGK59R" time="0.003">
-  <properties/>
-  <testcase name="testForEmptyString" classname="TestForCompiler" time="0.003"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

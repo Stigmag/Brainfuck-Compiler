@@ -1,26 +1,14 @@
 package model.command;
 
-import model.compiler.InputData;
-import model.visitor.Visitor;
 
-public class GreaterThanCommand  implements ICommand {
+import model.compiler.Memory;
 
-    private int pointer;
-    private InputData inputData;
-
-    public GreaterThanCommand( InputData inputData) {
-        this.inputData=inputData;
-        this.pointer = inputData.getPointer();
-    }
+public class GreaterThanCommand extends Command {
 
     @Override
-    public void execute() {
-        this.inputData.setPointer(++this.pointer);
+    public void execute(Memory memory) {
+        int pointer = memory.getPointer() + 1;
+        memory.setPointer(pointer);
 
-    }
-
-    @Override
-    public void accept(Visitor visitor) {
-        visitor.visitGreaterThanCommand(this);
     }
 }

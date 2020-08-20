@@ -1,25 +1,13 @@
 package model.command;
 
-import model.compiler.InputData;
-import model.visitor.Visitor;
 
-public class LessThanCommand implements ICommand {
+import model.compiler.Memory;
 
-    private int pointer;
-    private InputData inputData;
-
-    public LessThanCommand(InputData inputData) {
-        this.inputData = inputData;
-        this.pointer = inputData.getPointer();
-    }
+public class LessThanCommand extends Command {
 
     @Override
-    public void execute() {
-        this.inputData.setPointer(--this.pointer);
-    }
-
-    @Override
-    public void accept(Visitor visitor) {
-        visitor.visitLessThanCommand(this);
+    public void execute(Memory memory) {
+        int pointer = memory.getPointer() - 1;
+        memory.setPointer(pointer);
     }
 }

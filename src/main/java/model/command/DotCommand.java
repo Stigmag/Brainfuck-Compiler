@@ -1,31 +1,10 @@
 package model.command;
 
-import model.compiler.InputData;
-import model.compiler.OutputData;
-import model.visitor.Visitor;
+import model.compiler.Memory;
 
-public class DotCommand  implements ICommand {
-
-    private int pointer;
-    private short[] arr;
-    private StringBuilder output;
-    private InputData inputData;
-    private OutputData outputData;
-
-    public DotCommand(InputData inputData,OutputData outputData) {
-        this.inputData=inputData;
-        this.pointer = inputData.getPointer();
-        this.arr = inputData.getArr();
-        this.output = outputData.getOutput();
-        this.outputData=outputData;
-    }
-
+public class DotCommand extends Command {
     @Override
-    public void execute() {
-        this.outputData.setOutput(this.output.append((char) arr[pointer]));
-    }
-    @Override
-    public void accept(Visitor visitor) {
-        visitor.visitDotCommand(this);
+    public void execute(Memory memory) {
+        memory.setOutput(memory.getOutput().append((char) memory.getArr()[memory.getPointer()]));
     }
 }

@@ -1,39 +1,54 @@
 package model.visitor;
 
 import model.command.*;
+import model.lexeme.*;
+
+import java.util.*;
 
 public class CommandVisitor implements Visitor {
-    public CommandVisitor() {
+    private Deque<List<Command>> commands;
+    private List<Command> innerCommand;
+
+    public CommandVisitor(Deque<List<Command>> commands) {
+        this.commands = commands;
+        List<Command> innerCommand = new ArrayList<>();
+    }
+
+
+    @Override
+    public void visitPlusLexeme(PlusLexeme command) {
+        commands.peek().add(new PlusCommand());
     }
 
     @Override
-    public void visitPlusCommand(PlusCommand command) {
-command.execute();
+    public void visitMinusLexeme(MinusLexeme command) {
+        commands.peek().add(new MinusCommand());
     }
 
     @Override
-    public void visitMinusCommand(MinusCommand command) {
-        command.execute();
+    public void visitGreaterThanLexeme(GreaterThanLexeme command) {
+        commands.peek().add(new GreaterThanCommand());
     }
 
     @Override
-    public void visitGreaterThanCommand(GreaterThanCommand command) {
-        command.execute();
+    public void visitLessThanLexeme(LessThanLexeme command) {
+        commands.peek().add(new LessThanCommand());
     }
 
     @Override
-    public void visitLessThanCommand(LessThanCommand command) {
-        command.execute();
+    public void visitDotLexeme(DotLexeme command) {
+        commands.peek().add(new DotCommand());
+
     }
 
     @Override
-    public boolean visitLoopCommand(LoopCommand command) {
-        command.execute();
-        return command.isStatus();
+    public void visitOpenBracketLexeme(OpenBracketLexeme command) {
+        commands.push(new ArrayList<Command>());
     }
 
     @Override
-    public void visitDotCommand(DotCommand command) {
-        command.execute();
+    public void visitCloseBracketLexeme(CloseBracketLexeme command) {
+        innerCommand = commands.pop();
+        commands.peek().add(new LoopCommand(innerCommand));
     }
 }

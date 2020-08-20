@@ -1,31 +1,26 @@
 package model.command;
 
-import model.compiler.InputData;
-import model.visitor.Visitor;
+import model.compiler.Memory;
 
-public class LoopCommand implements ICommand {
+import java.util.List;
 
-    private boolean checkedLoopStatus;
-    private short[] arr;
-    private int pointer;
+public class LoopCommand extends Command {
+    private List<Command> innerCommand;
 
-    public LoopCommand(InputData inputData) {
-        this.checkedLoopStatus = false;
-        this.arr = inputData.getArr();
-        this.pointer = inputData.getPointer();
-    }
-
-    public boolean isStatus() {
-        return checkedLoopStatus;
+    public LoopCommand(List<Command> innerCommand) {
+        this.innerCommand = innerCommand;
     }
 
     @Override
-    public void execute() {
-        this.checkedLoopStatus = this.arr[this.pointer] != 0;
-    }
+    public void execute(Memory memory) {
+        while (memory.getArr()[memory.getPointer()] != 0) {
+            for (Command command : this.innerCommand
+            ) {
+                command.execute(memory);
 
-    @Override
-    public void accept(Visitor visitor) {
-        visitor.visitLoopCommand(this);
+            }
+        }
     }
 }
+
+
